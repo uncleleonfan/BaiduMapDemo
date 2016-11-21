@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/zoom_in"
+        android:title="放大"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/zoom_out"
+        android:title="缩小"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/rotate"
+        android:title="旋转"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/translate"
+        android:title="平移"
+        app:showAsAction="never"/>
+</menu>

@@ -10,7 +10,6 @@ import com.baidu.mapapi.SDKInitializer;
  * 描述：    TODO
  */
 public class BDMApplication extends Application {
-    public static final String TAG = "BDMApplication";
 
     @Override
     public void onCreate() {
