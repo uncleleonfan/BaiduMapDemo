@@ -2,15 +2,17 @@ package com.itheima.bdmdemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+
+import static android.util.Log.d;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -61,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
 //                mMap.setMapStatus(mapStatusUpdate);//改变地图状态
                 mMap.setOnMapStatusChangeListener(mOnMapStatusChangeListener);
                 break;
+            case R.id.zoom_out:
+                mMap.animateMapStatus(MapStatusUpdateFactory.zoomOut());
+                mMap.setOnMapStatusChangeListener(mOnMapStatusChangeListener);
+                break;
         }
         return true;
     }
@@ -68,18 +74,18 @@ public class MainActivity extends AppCompatActivity {
     private BaiduMap.OnMapStatusChangeListener mOnMapStatusChangeListener = new BaiduMap.OnMapStatusChangeListener() {
         @Override
         public void onMapStatusChangeStart(MapStatus mapStatus) {
-            Log.d(TAG, "onMapStatusChangeStart: ");
+            Toast.makeText(MainActivity.this, "onMapStatusChangeStart: " + mapStatus.zoom, Toast.LENGTH_SHORT).show();
         }
 
 
         @Override
         public void onMapStatusChange(MapStatus mapStatus) {
-            Log.d(TAG, "onMapStatusChange: ");
+            d(TAG, "onMapStatusChange: ");
         }
 
         @Override
         public void onMapStatusChangeFinish(MapStatus mapStatus) {
-            Log.d(TAG, "onMapStatusChangeFinish: ");
+            Toast.makeText(MainActivity.this, "onMapStatusChangeFinish: " + mapStatus.zoom, Toast.LENGTH_SHORT).show();
         }
     };
 }
