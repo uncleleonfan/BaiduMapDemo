@@ -21,4 +21,9 @@
         android:id="@+id/translate"
         android:title="平移"
         app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/mark"
+        android:title="标注"
+        app:showAsAction="never"/>
 </menu>

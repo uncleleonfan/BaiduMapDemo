@@ -7,10 +7,14 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 
 import static android.util.Log.d;
@@ -22,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     private MapView mMapView;
     private BaiduMap mMap;
     private LatLng mLatLng = new LatLng(22.581981, 113.929588);
+    private BitmapDescriptor mMarkBitmap;
+
+    private boolean marked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mMapView = (MapView) findViewById(R.id.bmapView);
         mMap = mMapView.getMap();
+        //构建Marker图标
+        mMarkBitmap = BitmapDescriptorFactory.fromResource(R.mipmap.icon_gcoding);
+
+        //初始化位置
+        translateToHeiMa();
     }
 
     @Override
@@ -79,12 +91,31 @@ public class MainActivity extends AppCompatActivity {
             case R.id.translate:
 //                mMap.animateMapStatus(MapStatusUpdateFactory.newLatLng(mLatLng));
 //                mMap.animateMapStatus(MapStatusUpdateFactory.zoomTo(18));
-                MapStatus.Builder translateBuilder = new MapStatus.Builder();
-                translateBuilder.target(mLatLng).zoom(18);
-                mMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(translateBuilder.build()));
+                translateToHeiMa();
+                break;
+            case R.id.mark:
+                if (marked) {
+                    item.setTitle("标注");
+                    mMap.clear();
+                } else {
+                    //构建MarkerOption，用于在地图上添加Marker
+                    OverlayOptions option = new MarkerOptions()
+                            .position(mLatLng)
+                            .icon(mMarkBitmap);
+                    //在地图上添加Marker，并显示
+                    mMap.addOverlay(option);
+                    item.setTitle("取消标注");
+                }
+                marked = !marked;
                 break;
         }
         return true;
+    }
+
+    private void translateToHeiMa() {
+        MapStatus.Builder translateBuilder = new MapStatus.Builder();
+        translateBuilder.target(mLatLng).zoom(18);
+        mMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(translateBuilder.build()));
     }
 
     private BaiduMap.OnMapStatusChangeListener mOnMapStatusChangeListener = new BaiduMap.OnMapStatusChangeListener() {
