@@ -67,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
                 mMap.animateMapStatus(MapStatusUpdateFactory.zoomOut());
                 mMap.setOnMapStatusChangeListener(mOnMapStatusChangeListener);
                 break;
+            case R.id.rotate:
+                MapStatus mapStatus = mMap.getMapStatus();
+                MapStatus.Builder builder = new MapStatus.Builder();
+                builder.rotate(mapStatus.rotate + 90);//逆时针旋转
+                MapStatusUpdate update = MapStatusUpdateFactory.newMapStatus(builder.build());
+                mMap.animateMapStatus(update);
+                break;
         }
         return true;
     }
