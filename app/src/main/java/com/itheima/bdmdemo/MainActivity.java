@@ -11,6 +11,7 @@ import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.model.LatLng;
 
 import static android.util.Log.d;
 
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MapView mMapView;
     private BaiduMap mMap;
+    private LatLng mLatLng = new LatLng(22.581981, 113.929588);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +73,15 @@ public class MainActivity extends AppCompatActivity {
                 MapStatus mapStatus = mMap.getMapStatus();
                 MapStatus.Builder builder = new MapStatus.Builder();
                 builder.rotate(mapStatus.rotate + 90);//逆时针旋转
-                MapStatusUpdate update = MapStatusUpdateFactory.newMapStatus(builder.build());
-                mMap.animateMapStatus(update);
+                MapStatusUpdate rotateUpdate = MapStatusUpdateFactory.newMapStatus(builder.build());
+                mMap.animateMapStatus(rotateUpdate);
+                break;
+            case R.id.translate:
+//                mMap.animateMapStatus(MapStatusUpdateFactory.newLatLng(mLatLng));
+//                mMap.animateMapStatus(MapStatusUpdateFactory.zoomTo(18));
+                MapStatus.Builder translateBuilder = new MapStatus.Builder();
+                translateBuilder.target(mLatLng).zoom(18);
+                mMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(translateBuilder.build()));
                 break;
         }
         return true;
