@@ -26,4 +26,8 @@
         android:id="@+id/mark"
         android:title="标注"
         app:showAsAction="never"/>
+
+    <item android:id="@+id/circle_mark"
+        android:title="圆形覆盖物"
+        app:showAsAction="never"/>
 </menu>

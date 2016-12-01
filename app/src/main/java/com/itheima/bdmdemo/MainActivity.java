@@ -1,5 +1,6 @@
 package com.itheima.bdmdemo;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.CircleOptions;
 import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
@@ -21,6 +23,7 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.model.LatLng;
 
 import static android.util.Log.d;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private BitmapDescriptor mMarkBitmap;
 
     private boolean marked = false;
+    private boolean circleMarked = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         mMap.setOnMarkerClickListener(mOnMarkerClickListener);
         mMap.setOnMapClickListener(mOnMapClickListener);
         //初始化位置
-        translateToHeiMa();
+        translate();
     }
 
     @Override
@@ -79,47 +83,76 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.zoom_in:
-                MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.zoomIn();
-                mMap.animateMapStatus(mapStatusUpdate);//动画方式改变地图状态
-//                mMap.setMapStatus(mapStatusUpdate);//改变地图状态
-                mMap.setOnMapStatusChangeListener(mOnMapStatusChangeListener);
+                zoomIn();
                 break;
             case R.id.zoom_out:
-                mMap.animateMapStatus(MapStatusUpdateFactory.zoomOut());
-                mMap.setOnMapStatusChangeListener(mOnMapStatusChangeListener);
+                zoomOut();
                 break;
             case R.id.rotate:
-                MapStatus mapStatus = mMap.getMapStatus();
-                MapStatus.Builder builder = new MapStatus.Builder();
-                builder.rotate(mapStatus.rotate + 90);//逆时针旋转
-                MapStatusUpdate rotateUpdate = MapStatusUpdateFactory.newMapStatus(builder.build());
-                mMap.animateMapStatus(rotateUpdate);
+                rotate();
                 break;
             case R.id.translate:
-//                mMap.animateMapStatus(MapStatusUpdateFactory.newLatLng(mLatLng));
-//                mMap.animateMapStatus(MapStatusUpdateFactory.zoomTo(18));
-                translateToHeiMa();
+                translate();
                 break;
             case R.id.mark:
                 if (marked) {
                     item.setTitle("标注");
                     mMap.clear();
                 } else {
-                    //构建MarkerOption，用于在地图上添加Marker
-                    OverlayOptions option = new MarkerOptions().position(mLatLng).icon(mMarkBitmap)
-                            .animateType(MarkerOptions.MarkerAnimateType.grow)
-                            .title("中粮商务公园");
-                    //在地图上添加Marker，并显示
-                    mMap.addOverlay(option);
                     item.setTitle("取消标注");
+                    addMarkerOverlay();
                 }
                 marked = !marked;
+                break;
+            case R.id.circle_mark:
+                if (circleMarked) {
+                    item.setTitle("圆形覆盖物");
+                    mMap.clear();
+                } else {
+                    item.setTitle("取消圆形覆盖物");
+                    addCircleOverlay();
+                }
+                circleMarked = !circleMarked;
                 break;
         }
         return true;
     }
 
-    private void translateToHeiMa() {
+    private void addCircleOverlay() {
+        OverlayOptions overlayOptions = new CircleOptions().center(mLatLng).fillColor(Color.BLUE).radius(30).stroke(new Stroke(5, Color.GREEN));//30m
+        mMap.addOverlay(overlayOptions);
+    }
+
+    private void rotate() {
+        MapStatus mapStatus = mMap.getMapStatus();
+        MapStatus.Builder builder = new MapStatus.Builder();
+        builder.rotate(mapStatus.rotate + 90);//逆时针旋转
+        MapStatusUpdate rotateUpdate = MapStatusUpdateFactory.newMapStatus(builder.build());
+        mMap.animateMapStatus(rotateUpdate);
+    }
+
+    private void zoomOut() {
+        mMap.animateMapStatus(MapStatusUpdateFactory.zoomOut());
+        mMap.setOnMapStatusChangeListener(mOnMapStatusChangeListener);
+    }
+
+    private void zoomIn() {
+        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.zoomIn();
+        mMap.animateMapStatus(mapStatusUpdate);//动画方式改变地图状态
+//                mMap.setMapStatus(mapStatusUpdate);//改变地图状态
+        mMap.setOnMapStatusChangeListener(mOnMapStatusChangeListener);
+    }
+
+    private void addMarkerOverlay() {
+        //构建MarkerOption，用于在地图上添加Marker
+        OverlayOptions option = new MarkerOptions().position(mLatLng).icon(mMarkBitmap)
+                .animateType(MarkerOptions.MarkerAnimateType.grow)
+                .title("中粮商务公园");
+        //在地图上添加Marker，并显示
+        mMap.addOverlay(option);
+    }
+
+    private void translate() {
         MapStatus.Builder translateBuilder = new MapStatus.Builder();
         translateBuilder.target(mLatLng).zoom(18);
         mMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(translateBuilder.build()));
