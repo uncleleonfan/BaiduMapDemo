@@ -27,6 +27,12 @@ import com.baidu.mapapi.map.PolygonOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
+import com.baidu.mapapi.search.poi.PoiDetailResult;
+import com.baidu.mapapi.search.poi.PoiIndoorResult;
+import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
+import com.baidu.mapapi.search.poi.PoiResult;
+import com.baidu.mapapi.search.poi.PoiSearch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean showCircle = false;
     private boolean showPoly = false;
 
+    private PoiSearch mPoiSearch;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +64,8 @@ public class MainActivity extends AppCompatActivity {
         mMarkBitmap = BitmapDescriptorFactory.fromResource(R.mipmap.icon_gcoding);
         mMap.setOnMarkerClickListener(mOnMarkerClickListener);
         mMap.setOnMapClickListener(mOnMapClickListener);
+        mPoiSearch = PoiSearch.newInstance();
+        mPoiSearch.setOnGetPoiSearchResultListener(poiListener);
         //初始化位置
         translate();
     }
@@ -115,9 +125,17 @@ public class MainActivity extends AppCompatActivity {
             case R.id.cancle_overlay:
                 mMap.clear();
                 break;
+            case R.id.poi_search:
+                poiSearch();
+                break;
 
         }
         return true;
+    }
+
+    private void poiSearch() {
+        PoiNearbySearchOption poiNearbySearchOption = new PoiNearbySearchOption().keyword("超市").location(mLatLng).radius(300);
+        mPoiSearch.searchNearby(poiNearbySearchOption);
     }
 
     private void addTextOverlay() {
@@ -214,6 +232,24 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onMapPoiClick(MapPoi mapPoi) {
             return false;
+        }
+    };
+
+    OnGetPoiSearchResultListener poiListener = new OnGetPoiSearchResultListener(){
+
+        @Override
+        public void onGetPoiResult(PoiResult poiResult) {
+            Toast.makeText(MainActivity.this, "附近有 " + poiResult.getTotalPoiNum() + "个超市", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onGetPoiDetailResult(PoiDetailResult poiDetailResult) {
+
+        }
+
+        @Override
+        public void onGetPoiIndoorResult(PoiIndoorResult poiIndoorResult) {
+
         }
     };
 }

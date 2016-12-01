@@ -41,4 +41,8 @@
     <item android:id="@+id/cancle_overlay"
         android:title="清除覆盖物"
         app:showAsAction="never"/>
+
+    <item android:id="@+id/poi_search"
+          android:title="POI搜索"
+          app:showAsAction="never"/>
 </menu>
