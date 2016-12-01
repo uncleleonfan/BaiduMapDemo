@@ -218,14 +218,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onMarkerClick(Marker marker) {
 //            Toast.makeText(MainActivity.this, marker.getTitle(), Toast.LENGTH_SHORT).show();
-            View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.infowindow, null);
-            TextView viewById = (TextView) view.findViewById(R.id.infowindo_title);
-            viewById.setText(marker.getTitle());
-            InfoWindow infoWindow = new InfoWindow(view, marker.getPosition(), -70);
-            mMap.showInfoWindow(infoWindow);
+            showInfoWindow(marker.getTitle(), marker.getPosition());
             return true;
         }
     };
+
+    private void showInfoWindow(String title, LatLng position) {
+        View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.infowindow, null);
+        TextView viewById = (TextView) view.findViewById(R.id.infowindo_title);
+        viewById.setText(title);
+        InfoWindow infoWindow = new InfoWindow(view, position, -70);
+        mMap.showInfoWindow(infoWindow);
+    }
+
     private BaiduMap.OnMapClickListener mOnMapClickListener = new BaiduMap.OnMapClickListener() {
         @Override
         public void onMapClick(LatLng latLng) {
@@ -290,7 +295,8 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public boolean onPoiClick(int index) {
-            super.onPoiClick(index);
+            PoiInfo poiInfo = getPoiResult().getAllPoi().get(index);
+            showInfoWindow(poiInfo.name, poiInfo.location);
             return true;
         }
     }
