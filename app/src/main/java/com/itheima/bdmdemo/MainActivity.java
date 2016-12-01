@@ -28,12 +28,14 @@ import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.search.core.PoiInfo;
+import com.baidu.mapapi.search.core.SearchResult;
 import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
 import com.baidu.mapapi.search.poi.PoiDetailResult;
 import com.baidu.mapapi.search.poi.PoiIndoorResult;
 import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
+import com.itheima.bdmdemo.overlay.PoiOverlay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -241,7 +243,23 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onGetPoiResult(PoiResult poiResult) {
             Toast.makeText(MainActivity.this, "附近有 " + poiResult.getTotalPoiNum() + "个超市", Toast.LENGTH_SHORT).show();
-            markPoiResult(poiResult);
+//            markPoiResult(poiResult);
+            if (poiResult == null || poiResult.error == SearchResult.ERRORNO.RESULT_NOT_FOUND) {
+                return;
+            }
+            if (poiResult.error == SearchResult.ERRORNO.NO_ERROR) {
+                mMap.clear();
+                //创建PoiOverlay
+                PoiOverlay overlay = new MyPoiOverlay(mMap);
+                //设置overlay可以处理标注点击事件
+                mMap.setOnMarkerClickListener(overlay);
+                //设置PoiOverlay数据
+                overlay.setData(poiResult);
+                //添加PoiOverlay到地图中
+                overlay.addToMap();
+                overlay.zoomToSpan();
+                return;
+            }
         }
 
         @Override
@@ -265,4 +283,16 @@ public class MainActivity extends AppCompatActivity {
             mMap.addOverlay(overlayOptions);
         }
     }
+
+    private class MyPoiOverlay extends PoiOverlay {
+        public MyPoiOverlay(BaiduMap baiduMap) {
+            super(baiduMap);
+        }
+        @Override
+        public boolean onPoiClick(int index) {
+            super.onPoiClick(index);
+            return true;
+        }
+    }
+
 }
