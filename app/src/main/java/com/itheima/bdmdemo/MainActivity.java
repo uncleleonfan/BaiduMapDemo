@@ -27,6 +27,7 @@ import com.baidu.mapapi.map.PolygonOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.search.core.PoiInfo;
 import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
 import com.baidu.mapapi.search.poi.PoiDetailResult;
 import com.baidu.mapapi.search.poi.PoiIndoorResult;
@@ -218,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
             View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.infowindow, null);
             TextView viewById = (TextView) view.findViewById(R.id.infowindo_title);
             viewById.setText(marker.getTitle());
-            InfoWindow infoWindow = new InfoWindow(view, mLatLng, -70);
+            InfoWindow infoWindow = new InfoWindow(view, marker.getPosition(), -70);
             mMap.showInfoWindow(infoWindow);
             return true;
         }
@@ -240,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onGetPoiResult(PoiResult poiResult) {
             Toast.makeText(MainActivity.this, "附近有 " + poiResult.getTotalPoiNum() + "个超市", Toast.LENGTH_SHORT).show();
+            markPoiResult(poiResult);
         }
 
         @Override
@@ -252,4 +254,15 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    private void markPoiResult(PoiResult poiResult) {
+        for (int i = 0; i < poiResult.getTotalPoiNum(); i++) {
+            PoiInfo poiInfo = poiResult.getAllPoi().get(i);
+            OverlayOptions overlayOptions = new MarkerOptions().position(poiInfo.location)
+                    .icon(mMarkBitmap)
+                    .animateType(MarkerOptions.MarkerAnimateType.drop)
+                    .title(poiInfo.name);
+            mMap.addOverlay(overlayOptions);
+        }
+    }
 }
