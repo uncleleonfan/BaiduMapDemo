@@ -23,11 +23,18 @@
         app:showAsAction="never"/>
 
     <item
-        android:id="@+id/mark"
+        android:id="@+id/mark_overlay"
         android:title="标注"
         app:showAsAction="never"/>
 
-    <item android:id="@+id/circle_mark"
+    <item android:id="@+id/circle_overlay"
         android:title="圆形覆盖物"
+        app:showAsAction="never"/>
+
+    <item android:id="@+id/poly_overlay"
+        android:title="几何图形覆盖物"
+        app:showAsAction="never"/>
+    <item android:id="@+id/cancle_overlay"
+        android:title="清除覆盖物"
         app:showAsAction="never"/>
 </menu>

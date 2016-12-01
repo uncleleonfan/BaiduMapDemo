@@ -23,8 +23,12 @@ import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.PolygonOptions;
 import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.model.LatLng;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.util.Log.d;
 
@@ -37,8 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private LatLng mLatLng = new LatLng(22.581981, 113.929588);
     private BitmapDescriptor mMarkBitmap;
 
-    private boolean marked = false;
-    private boolean circleMarked = false;
+    private boolean showMarker = false;
+    private boolean showCircle = false;
+    private boolean showPoly = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,28 +99,31 @@ public class MainActivity extends AppCompatActivity {
             case R.id.translate:
                 translate();
                 break;
-            case R.id.mark:
-                if (marked) {
-                    item.setTitle("标注");
-                    mMap.clear();
-                } else {
-                    item.setTitle("取消标注");
-                    addMarkerOverlay();
-                }
-                marked = !marked;
+            case R.id.mark_overlay:
+                addMarkerOverlay();
                 break;
-            case R.id.circle_mark:
-                if (circleMarked) {
-                    item.setTitle("圆形覆盖物");
-                    mMap.clear();
-                } else {
-                    item.setTitle("取消圆形覆盖物");
-                    addCircleOverlay();
-                }
-                circleMarked = !circleMarked;
+            case R.id.circle_overlay:
+                addCircleOverlay();
                 break;
+            case R.id.poly_overlay:
+                addPolyOverlay();
+                break;
+            case R.id.cancle_overlay:
+                mMap.clear();
+                break;
+
         }
         return true;
+    }
+
+    private void addPolyOverlay() {
+        List<LatLng> latLngs = new ArrayList<LatLng>();
+        latLngs.add(new LatLng(22.582803, 113.930234));
+        latLngs.add(new LatLng(22.581843, 113.931209));
+        latLngs.add(new LatLng(22.580417, 113.929435));
+        latLngs.add(new LatLng(22.581372, 113.928563));
+        OverlayOptions overlayOptions = new PolygonOptions().points(latLngs).stroke(new Stroke(5, Color.GREEN)).fillColor(0xAAFFFF00);
+        mMap.addOverlay(overlayOptions);
     }
 
     private void addCircleOverlay() {
