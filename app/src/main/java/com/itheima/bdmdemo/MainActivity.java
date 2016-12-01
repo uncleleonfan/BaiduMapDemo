@@ -13,6 +13,7 @@ import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.InfoWindow;
+import com.baidu.mapapi.map.MapPoi;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         //构建Marker图标
         mMarkBitmap = BitmapDescriptorFactory.fromResource(R.mipmap.icon_gcoding);
         mMap.setOnMarkerClickListener(mOnMarkerClickListener);
+        mMap.setOnMapClickListener(mOnMapClickListener);
         //初始化位置
         translateToHeiMa();
     }
@@ -151,6 +153,17 @@ public class MainActivity extends AppCompatActivity {
             InfoWindow infoWindow = new InfoWindow(view, mLatLng, -70);
             mMap.showInfoWindow(infoWindow);
             return true;
+        }
+    };
+    private BaiduMap.OnMapClickListener mOnMapClickListener = new BaiduMap.OnMapClickListener() {
+        @Override
+        public void onMapClick(LatLng latLng) {
+            mMap.hideInfoWindow();
+        }
+
+        @Override
+        public boolean onMapPoiClick(MapPoi mapPoi) {
+            return false;
         }
     };
 }
