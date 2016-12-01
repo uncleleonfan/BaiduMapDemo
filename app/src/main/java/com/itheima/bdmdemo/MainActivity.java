@@ -2,17 +2,22 @@ package com.itheima.bdmdemo;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
@@ -38,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         mMap = mMapView.getMap();
         //构建Marker图标
         mMarkBitmap = BitmapDescriptorFactory.fromResource(R.mipmap.icon_gcoding);
-
+        mMap.setOnMarkerClickListener(mOnMarkerClickListener);
         //初始化位置
         translateToHeiMa();
     }
@@ -99,9 +104,9 @@ public class MainActivity extends AppCompatActivity {
                     mMap.clear();
                 } else {
                     //构建MarkerOption，用于在地图上添加Marker
-                    OverlayOptions option = new MarkerOptions()
-                            .position(mLatLng)
-                            .icon(mMarkBitmap);
+                    OverlayOptions option = new MarkerOptions().position(mLatLng).icon(mMarkBitmap)
+                            .animateType(MarkerOptions.MarkerAnimateType.grow)
+                            .title("中粮商务公园");
                     //在地图上添加Marker，并显示
                     mMap.addOverlay(option);
                     item.setTitle("取消标注");
@@ -133,6 +138,19 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onMapStatusChangeFinish(MapStatus mapStatus) {
             Toast.makeText(MainActivity.this, "onMapStatusChangeFinish: " + mapStatus.zoom, Toast.LENGTH_SHORT).show();
+        }
+    };
+
+    private BaiduMap.OnMarkerClickListener mOnMarkerClickListener = new BaiduMap.OnMarkerClickListener() {
+        @Override
+        public boolean onMarkerClick(Marker marker) {
+//            Toast.makeText(MainActivity.this, marker.getTitle(), Toast.LENGTH_SHORT).show();
+            View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.infowindow, null);
+            TextView viewById = (TextView) view.findViewById(R.id.infowindo_title);
+            viewById.setText(marker.getTitle());
+            InfoWindow infoWindow = new InfoWindow(view, mLatLng, -70);
+            mMap.showInfoWindow(infoWindow);
+            return true;
         }
     };
 }
