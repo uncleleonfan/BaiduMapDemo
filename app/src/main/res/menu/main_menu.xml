@@ -24,7 +24,7 @@
 
     <item
         android:id="@+id/mark_overlay"
-        android:title="标注"
+        android:title="标注覆盖物"
         app:showAsAction="never"/>
 
     <item android:id="@+id/circle_overlay"
@@ -34,6 +34,10 @@
     <item android:id="@+id/poly_overlay"
         android:title="几何图形覆盖物"
         app:showAsAction="never"/>
+
+    <item android:id="@+id/text_overlay"
+          android:title="文本覆盖物"
+          app:showAsAction="never"/>
     <item android:id="@+id/cancle_overlay"
         android:title="清除覆盖物"
         app:showAsAction="never"/>

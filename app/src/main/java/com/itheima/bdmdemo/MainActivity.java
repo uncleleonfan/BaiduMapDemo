@@ -25,6 +25,7 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolygonOptions;
 import com.baidu.mapapi.map.Stroke;
+import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
 
 import java.util.ArrayList;
@@ -108,12 +109,20 @@ public class MainActivity extends AppCompatActivity {
             case R.id.poly_overlay:
                 addPolyOverlay();
                 break;
+            case R.id.text_overlay:
+                addTextOverlay();
+                break;
             case R.id.cancle_overlay:
                 mMap.clear();
                 break;
 
         }
         return true;
+    }
+
+    private void addTextOverlay() {
+        OverlayOptions overlayOptions = new TextOptions().text("黑马程序员").fontColor(Color.BLACK).fontSize(30).position(mLatLng);
+        mMap.addOverlay(overlayOptions);
     }
 
     private void addPolyOverlay() {
