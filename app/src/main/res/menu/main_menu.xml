@@ -45,4 +45,10 @@
     <item android:id="@+id/poi_search"
           android:title="POI搜索"
           app:showAsAction="never"/>
+
+    <item android:id="@+id/route_plan"
+          android:title="线路规划"
+          app:showAsAction="never"/>
+
+
 </menu>

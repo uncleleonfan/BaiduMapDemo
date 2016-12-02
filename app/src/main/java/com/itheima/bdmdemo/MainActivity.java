@@ -35,7 +35,18 @@ import com.baidu.mapapi.search.poi.PoiIndoorResult;
 import com.baidu.mapapi.search.poi.PoiNearbySearchOption;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
+import com.baidu.mapapi.search.route.BikingRouteResult;
+import com.baidu.mapapi.search.route.DrivingRouteResult;
+import com.baidu.mapapi.search.route.IndoorRouteResult;
+import com.baidu.mapapi.search.route.MassTransitRouteResult;
+import com.baidu.mapapi.search.route.OnGetRoutePlanResultListener;
+import com.baidu.mapapi.search.route.PlanNode;
+import com.baidu.mapapi.search.route.RoutePlanSearch;
+import com.baidu.mapapi.search.route.TransitRoutePlanOption;
+import com.baidu.mapapi.search.route.TransitRouteResult;
+import com.baidu.mapapi.search.route.WalkingRouteResult;
 import com.itheima.bdmdemo.overlay.PoiOverlay;
+import com.itheima.bdmdemo.overlay.TransitRouteOverlay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +62,8 @@ public class MainActivity extends AppCompatActivity {
     private LatLng mLatLng = new LatLng(22.581981, 113.929588);
     private BitmapDescriptor mMarkBitmap;
 
-    private boolean showMarker = false;
-    private boolean showCircle = false;
-    private boolean showPoly = false;
-
     private PoiSearch mPoiSearch;
+    private RoutePlanSearch mSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +77,12 @@ public class MainActivity extends AppCompatActivity {
         mMap.setOnMapClickListener(mOnMapClickListener);
         mPoiSearch = PoiSearch.newInstance();
         mPoiSearch.setOnGetPoiSearchResultListener(poiListener);
+
+        mSearch = RoutePlanSearch.newInstance();
+        mSearch.setOnGetRoutePlanResultListener( routeListener);
         //初始化位置
         translate();
+
     }
 
     @Override
@@ -78,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         //在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
         mMapView.onDestroy();
+        mSearch.destroy();
     }
     @Override
     protected void onResume() {
@@ -131,9 +144,23 @@ public class MainActivity extends AppCompatActivity {
             case R.id.poi_search:
                 poiSearch();
                 break;
+            case R.id.route_plan:
+                routePlan();
+                break;
 
         }
         return true;
+    }
+
+    private void routePlan() {
+/*        PlanNode stMassNode = PlanNode.withCityNameAndPlaceName("北京", "天安门");
+        PlanNode enMassNode = PlanNode.withCityNameAndPlaceName("上海", "东方明珠");
+        mSearch.masstransitSearch(new MassTransitRoutePlanOption().from(stMassNode).to(enMassNode));*/
+
+        PlanNode stMassNode = PlanNode.withCityNameAndPlaceName("深圳", "兴东");
+        PlanNode enMassNode = PlanNode.withCityNameAndPlaceName("深圳", "高新园");
+        mSearch.transitSearch(new TransitRoutePlanOption().city("深圳").from(stMassNode).to(enMassNode));
+
     }
 
     private void poiSearch() {
@@ -300,5 +327,78 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     }
+
+    OnGetRoutePlanResultListener routeListener = new OnGetRoutePlanResultListener(){
+        @Override
+        public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
+
+        }
+
+        @Override
+        public void onGetTransitRouteResult(TransitRouteResult result) {
+            if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
+                Toast.makeText(MainActivity.this, "抱歉，未找到结果", Toast.LENGTH_SHORT).show();
+            }
+            if (result.error == SearchResult.ERRORNO.AMBIGUOUS_ROURE_ADDR) {
+                //起终点或途经点地址有岐义，通过以下接口获取建议查询信息
+                //result.getSuggestAddrInfo()
+                return;
+            }
+            if (result.error == SearchResult.ERRORNO.NO_ERROR) {
+                TransitRouteOverlay overlay = new MyTransitRouteOverlay(mMap);
+                mMap.setOnMarkerClickListener(overlay);
+                overlay.setData(result.getRouteLines().get(0));
+                overlay.addToMap();
+                overlay.zoomToSpan();
+            }
+            //同城公交
+            Toast.makeText(MainActivity.this, "共有" + result.getRouteLines().size() + "公交线路", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onGetMassTransitRouteResult(MassTransitRouteResult result) {
+            //获取跨城综合公共交通线路规划结果
+            Toast.makeText(MainActivity.this, "共有" + result.getRouteLines().size() + "跨城线路", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onGetDrivingRouteResult(DrivingRouteResult drivingRouteResult) {
+
+        }
+
+        @Override
+        public void onGetIndoorRouteResult(IndoorRouteResult indoorRouteResult) {
+
+        }
+
+        @Override
+        public void onGetBikingRouteResult(BikingRouteResult bikingRouteResult) {
+
+        }
+    };
+
+    private class MyTransitRouteOverlay extends TransitRouteOverlay {
+
+        /**
+         * 构造函数
+         *
+         * @param baiduMap 该TransitRouteOverlay引用的 BaiduMap 对象
+         */
+        public MyTransitRouteOverlay(BaiduMap baiduMap) {
+            super(baiduMap);
+        }
+
+        @Override
+        public BitmapDescriptor getStartMarker() {
+            return BitmapDescriptorFactory.fromResource(R.mipmap.icon_marka);
+        }
+
+        @Override
+        public BitmapDescriptor getTerminalMarker() {
+            return BitmapDescriptorFactory.fromResource(R.mipmap.icon_markb);
+        }
+    }
+
+
 
 }
