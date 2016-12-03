@@ -196,14 +196,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void routePlan() {
-/*        PlanNode stMassNode = PlanNode.withCityNameAndPlaceName("北京", "天安门");
-        PlanNode enMassNode = PlanNode.withCityNameAndPlaceName("上海", "东方明珠");
-        mSearch.masstransitSearch(new MassTransitRoutePlanOption().from(stMassNode).to(enMassNode));*/
-
         PlanNode stMassNode = PlanNode.withCityNameAndPlaceName("深圳", "兴东");
         PlanNode enMassNode = PlanNode.withCityNameAndPlaceName("深圳", "高新园");
         mSearch.transitSearch(new TransitRoutePlanOption().city("深圳").from(stMassNode).to(enMassNode));
-
     }
 
     private void poiSearch() {
@@ -222,12 +217,15 @@ public class MainActivity extends AppCompatActivity {
         latLngs.add(new LatLng(22.581843, 113.931209));
         latLngs.add(new LatLng(22.580417, 113.929435));
         latLngs.add(new LatLng(22.581372, 113.928563));
-        OverlayOptions overlayOptions = new PolygonOptions().points(latLngs).stroke(new Stroke(5, Color.GREEN)).fillColor(0xAAFFFF00);
+        OverlayOptions overlayOptions = new PolygonOptions().points(latLngs)
+                .stroke(new Stroke(5, Color.GREEN)).fillColor(0xAAFFFF00);
         mMap.addOverlay(overlayOptions);
     }
 
     private void addCircleOverlay() {
-        OverlayOptions overlayOptions = new CircleOptions().center(mLatLng).fillColor(Color.BLUE).radius(30).stroke(new Stroke(5, Color.GREEN));//30m
+        OverlayOptions overlayOptions = new CircleOptions().center(mLatLng)
+                .fillColor(Color.BLUE).radius(30)
+                .stroke(new Stroke(5, Color.GREEN));//30m
         mMap.addOverlay(overlayOptions);
     }
 

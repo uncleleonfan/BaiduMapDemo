@@ -14,6 +14,7 @@
 * Android全景SDK
 
 ### HUD (Heads Up Display) ###
+平视显示器（Head Up Display）是目前普遍运用在航空器上的飞行辅助仪器。平视的意思是指飞行员不需要低头就能够看到他需要的重要资讯。
 ![HUD](img/hud.jpg)
 
 
@@ -104,28 +105,83 @@ Sample目录下有两个Demo，BaiduMapsApiASDemo为Android Studio项目，Baidu
     }
 
 
-
-
-
 # 放大 #
-
+    private void zoomIn() {
+        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.zoomIn();
+        mMap.animateMapStatus(mapStatusUpdate);//动画方式改变地图状态
+        mMap.setOnMapStatusChangeListener(mOnMapStatusChangeListener);
+    }
 # 缩小 #
+    private void zoomOut() {
+        mMap.animateMapStatus(MapStatusUpdateFactory.zoomOut());
+        mMap.setOnMapStatusChangeListener(mOnMapStatusChangeListener);
+    }
 
 # 旋转 #
+    private void rotate() {
+        MapStatus mapStatus = mMap.getMapStatus();
+        MapStatus.Builder builder = new MapStatus.Builder();
+        builder.rotate(mapStatus.rotate + 90);//逆时针旋转
+        MapStatusUpdate rotateUpdate = MapStatusUpdateFactory.newMapStatus(builder.build());
+        mMap.animateMapStatus(rotateUpdate);
+    }
+
 
 # 平移 #
+    private void translate() {
+        MapStatus.Builder translateBuilder = new MapStatus.Builder();
+        translateBuilder.target(mLatLng).zoom(18);
+        mMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(translateBuilder.build()));
+    }
 
 # 标注覆盖物 #
+    private void addMarkerOverlay() {
+        //构建MarkerOption，用于在地图上添加Marker
+        OverlayOptions option = new MarkerOptions().position(mLatLng).icon(mMarkBitmap)
+                .animateType(MarkerOptions.MarkerAnimateType.grow)
+                .title("中粮商务公园");
+        //在地图上添加Marker，并显示
+        mMap.addOverlay(option);
+    }
 
 # 圆形覆盖物 #
+    private void addCircleOverlay() {
+        OverlayOptions overlayOptions = new CircleOptions().center(mLatLng)
+                .fillColor(Color.BLUE).radius(30)
+                .stroke(new Stroke(5, Color.GREEN));//30m
+        mMap.addOverlay(overlayOptions);
+    }
 
 # 几何图形覆盖物 #
+    private void addPolyOverlay() {
+        List<LatLng> latLngs = new ArrayList<LatLng>();
+        latLngs.add(new LatLng(22.582803, 113.930234));
+        latLngs.add(new LatLng(22.581843, 113.931209));
+        latLngs.add(new LatLng(22.580417, 113.929435));
+        latLngs.add(new LatLng(22.581372, 113.928563));
+        OverlayOptions overlayOptions = new PolygonOptions().points(latLngs)
+                .stroke(new Stroke(5, Color.GREEN)).fillColor(0xAAFFFF00);
+        mMap.addOverlay(overlayOptions);
+    }
 
 # 文本覆盖物 #
+    private void addTextOverlay() {
+        OverlayOptions overlayOptions = new TextOptions().text("黑马程序员").fontColor(Color.BLACK).fontSize(30).position(mLatLng);
+        mMap.addOverlay(overlayOptions);
+    }
 
 # POI搜索 #
-
+    private void poiSearch() {
+        PoiNearbySearchOption poiNearbySearchOption = new PoiNearbySearchOption().keyword("超市").location(mLatLng).radius(300);
+        mPoiSearch.searchNearby(poiNearbySearchOption);
+    }
 # 线路规划 #
+    private void routePlan() {
+        PlanNode stMassNode = PlanNode.withCityNameAndPlaceName("深圳", "兴东");
+        PlanNode enMassNode = PlanNode.withCityNameAndPlaceName("深圳", "高新园");
+        mSearch.transitSearch(new TransitRoutePlanOption().city("深圳").from(stMassNode).to(enMassNode));
+    }
+
 
 # 定位 #
 [官方文档](http://lbsyun.baidu.com/index.php?title=android-locsdk)
@@ -140,7 +196,9 @@ Sample目录下有两个Demo，BaiduMapsApiASDemo为Android Studio项目，Baidu
     <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote"/>
 
 ## 获取位置 ##
-
-
+    mLocationClient = new LocationClient(getApplicationContext());     //声明LocationClient类
+    mLocationClient.registerLocationListener(myListener);    //注册监听函数
+    initLocation();
+    mLocationClient.start();
 ## 定位图层 ##
 [官方文档](http://lbsyun.baidu.com/index.php?title=androidsdk/guide/location)
