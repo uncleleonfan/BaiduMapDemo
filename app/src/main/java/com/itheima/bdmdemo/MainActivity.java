@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         //初始化位置
 //        translate();
 
-        Log.d(TAG, "startLocaction");
+        Log.d(TAG, "startLocation");
         mLocationClient = new LocationClient(getApplicationContext());     //声明LocationClient类
         mLocationClient.registerLocationListener(myListener);    //注册监听函数
         initLocation();

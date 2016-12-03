@@ -69,7 +69,8 @@ Sample目录下有两个Demo，BaiduMapsApiASDemo为Android Studio项目，Baidu
 	        //}
 	    //}
 * 如果key验证成功，就会提示功能可以正常使用
-![run_demo_success](img/run_demo_success.jpg)
+
+      ![run_demo_success](img/run_demo_success.jpg)
 
 
 # 基础地图 #
@@ -105,41 +106,41 @@ Sample目录下有两个Demo，BaiduMapsApiASDemo为Android Studio项目，Baidu
 
 
 
-# 基础控制 #
-## 放大 ##
 
-## 缩小 ##
+# 放大 #
 
-## 旋转 ##
+# 缩小 #
 
-## 平移 ##
+# 旋转 #
 
-## 标注覆盖物 ##
+# 平移 #
 
-## 圆形覆盖物 ##
+# 标注覆盖物 #
 
-## 几何图形覆盖物 ##
+# 圆形覆盖物 #
 
-## 文本覆盖物 ##
+# 几何图形覆盖物 #
 
-## POI搜索 ##
+# 文本覆盖物 #
 
-## 线路规划 ##
+# POI搜索 #
 
-## 定位 ##
+# 线路规划 #
+
+# 定位 #
 [官方文档](http://lbsyun.baidu.com/index.php?title=android-locsdk)
 
-### 申请密钥 ###
+## 申请密钥 ##
 同地图SDK的集成
 
-### 导入SDK ###
+## 导入SDK ##
 
-### 配置环境 ###
+## 配置环境 ##
     <!--Service一定要放在Applicatoin标签内-->
     <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote"/>
 
-### 获取位置 ###
+## 获取位置 ##
 
 
-### 定位图层 ###
+## 定位图层 ##
 [官方文档](http://lbsyun.baidu.com/index.php?title=androidsdk/guide/location)
