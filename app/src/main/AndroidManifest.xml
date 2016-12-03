@@ -43,8 +43,7 @@
         </activity>
 
         <!--Service一定要放在Applicatoin标签内-->
-        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
-        </service>
+        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote"/>
 
     </application>
 

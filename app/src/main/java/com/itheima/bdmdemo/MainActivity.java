@@ -27,6 +27,8 @@ import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
 import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration;
+import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.map.PolygonOptions;
 import com.baidu.mapapi.map.Stroke;
@@ -87,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         mPoiSearch.setOnGetPoiSearchResultListener(poiListener);
 
         mSearch = RoutePlanSearch.newInstance();
-        mSearch.setOnGetRoutePlanResultListener( routeListener);
+        mSearch.setOnGetRoutePlanResultListener(routeListener);
         //初始化位置
 //        translate();
 
@@ -102,8 +104,25 @@ public class MainActivity extends AppCompatActivity {
     private class MyLocationListener implements BDLocationListener {
 
         @Override
-        public void onReceiveLocation(BDLocation bdLocation) {
-            Log.d(TAG, bdLocation.getCity() + " " + bdLocation.getDistrict() + " " + bdLocation.getStreet());
+        public void onReceiveLocation(BDLocation location) {
+//            Log.d(TAG, bdLocation.getCity() + " " + bdLocation.getDistrict() + " " + bdLocation.getStreet());
+            MapStatus.Builder builder = new MapStatus.Builder();
+            builder.target(new LatLng(location.getLatitude(), location.getLongitude())).zoom(18);
+            mMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+
+            // 开启定位图层
+            mMap.setMyLocationEnabled(true);
+            // 构造定位数据
+            MyLocationData locData = new MyLocationData.Builder()
+                    .accuracy(location.getRadius())
+                    .latitude(location.getLatitude())
+                    .longitude(location.getLongitude()).build();
+            // 设置定位数据
+            mMap.setMyLocationData(locData);
+            // 设置定位图层的配置（定位模式，是否允许方向信息，用户自定义定位图标）
+            MyLocationConfiguration config = new MyLocationConfiguration(MyLocationConfiguration.LocationMode.NORMAL, true, mMarkBitmap);
+            mMap.setMyLocationConfigeration(config);
+
         }
     }
 
@@ -114,12 +133,14 @@ public class MainActivity extends AppCompatActivity {
         mMapView.onDestroy();
         mSearch.destroy();
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
         mMapView.onResume();
     }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -292,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    OnGetPoiSearchResultListener poiListener = new OnGetPoiSearchResultListener(){
+    OnGetPoiSearchResultListener poiListener = new OnGetPoiSearchResultListener() {
 
         @Override
         public void onGetPoiResult(PoiResult poiResult) {
@@ -342,6 +363,7 @@ public class MainActivity extends AppCompatActivity {
         public MyPoiOverlay(BaiduMap baiduMap) {
             super(baiduMap);
         }
+
         @Override
         public boolean onPoiClick(int index) {
             PoiInfo poiInfo = getPoiResult().getAllPoi().get(index);
@@ -350,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    OnGetRoutePlanResultListener routeListener = new OnGetRoutePlanResultListener(){
+    OnGetRoutePlanResultListener routeListener = new OnGetRoutePlanResultListener() {
         @Override
         public void onGetWalkingRouteResult(WalkingRouteResult walkingRouteResult) {
 
@@ -421,7 +443,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void initLocation(){
+    private void initLocation() {
         LocationClientOption option = new LocationClientOption();
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
         option.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系

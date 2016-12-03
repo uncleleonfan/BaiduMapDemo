@@ -35,12 +35,14 @@ Sample目录下有两个Demo，BaiduMapsApiASDemo为Android Studio项目，Baidu
 [官方文档](http://lbsyun.baidu.com/index.php?title=androidsdk/guide/key)
 ### 获取Debug版本的SHA1 ###
 密钥库口令为：android
+
 ![debug_sha1](img/debug_sha1.png)
 
 ### 获取Release版本的SHA1 ###
 查看.android下是否存在release版本的签名文件：xxx.jks，如果没有，则在AS中创建一个。
 
 密钥库口令为：签名文件xxx.jks的密码
+
 ![release_sha1](img/release_sha1.png)
 
 
@@ -111,86 +113,33 @@ Sample目录下有两个Demo，BaiduMapsApiASDemo为Android Studio项目，Baidu
 ## 旋转 ##
 
 ## 平移 ##
-- BaiduMap.animateMapStatus//有动画改变
-- BaiduMap.setMapStatus  //无动画改变
-- 放大 缩小  MapStatusUpdateFactory.zoomIn .zoomBy  .zoomOut  .zoomTo
-- 旋转  MapStatusUpdateFactory.newMapStatus
-- 移动 设置新的中心点  MapStatusUpdateFactory.newLatLng
-##标注覆盖物
-			//标注凌云大厦
-	        MarkerOptions lyOverlayOptions = new MarkerOptions();
-	        lyOverlayOptions.position(lyLat);
-	        BitmapDescriptor bitmapDescriptor1 = BitmapDescriptorFactory.fromResource(R.mipmap.icon_markb);
-	        lyOverlayOptions.icon(bitmapDescriptor1);
-	        lyOverlayOptions.animateType(MarkerOptions.MarkerAnimateType.drop);
-	        lyOverlayOptions.title("凌云大厦");
-	        mBaiduMap.addOverlay(lyOverlayOptions);
-	
-	
-	
-	
-	
-	        //点击标注点显示详细信息
-	        mBaiduMap.setOnMarkerClickListener(new BaiduMap.OnMarkerClickListener() {
-	            @Override
-	            public boolean onMarkerClick(Marker marker) {
-	                //在当前的标注上放显示详细信息
-	                InfoWindow infoWindow = new InfoWindow(infoView,marker.getPosition(),-90);
-	                //初始化显示详情
-	
-	                infowindow_title.setText(marker.getTitle());
-	                mBaiduMap.showInfoWindow(infoWindow);
-	                return true;
-	            }
-	        });
-##圆形覆盖物 矩形覆盖物
-- 圆形覆盖物
 
-		CircleOptions overlayOptions = new CircleOptions();
-        overlayOptions.center(zlLat);
-        overlayOptions.radius(500);
-        overlayOptions.fillColor(Color.parseColor("#23ffff00"));
-        Circle overlay = (Circle) mBaiduMap.addOverlay(overlayOptions);
+## 标注覆盖物 ##
 
-- 矩形覆盖物
+## 圆形覆盖物 ##
 
-		//创建矩形覆盖物的图片
-        BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromResource(R.mipmap.ground_overlay);
+## 几何图形覆盖物 ##
 
-        //第一种绘制矩形覆盖物方式
-        GroundOverlayOptions overlayOptions = new GroundOverlayOptions();
-        overlayOptions.dimensions(500,800);
-        overlayOptions.position(zlLat);
-        overlayOptions.image(bitmapDescriptor);
-        mBaiduMap.addOverlay(overlayOptions);
+## 文本覆盖物 ##
+
+## POI搜索 ##
+
+## 线路规划 ##
+
+## 定位 ##
+[官方文档](http://lbsyun.baidu.com/index.php?title=android-locsdk)
+
+### 申请密钥 ###
+同地图SDK的集成
+
+### 导入SDK ###
+
+### 配置环境 ###
+    <!--Service一定要放在Applicatoin标签内-->
+    <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote"/>
+
+### 获取位置 ###
 
 
-        //第二种绘制矩形覆盖物的方式
-        GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions();
-        LatLngBounds latBounds = new LatLngBounds.Builder()
-                .include(zlLat)
-                .include(cgLat)
-                .build();
-        groundOverlayOptions.positionFromBounds(latBounds);
-        groundOverlayOptions.image(bitmapDescriptor);
-        mBaiduMap.addOverlay(groundOverlayOptions);
-##地图图层
-
-##poi搜索
-
-##poi城市搜索
-
-##驾车路线规划
-
-##换乘路线规划
-
-##定位
-- 定位和地图可以分开
-	- 导入定位的sdk
-	- 清单文件中配置<service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote">
-</service> 
-	- 配置权限
-- 定位三个步骤
-	- 获取当前位置
-	- 显示定位图层
-	- 移动到当前位置  
+### 定位图层 ###
+[官方文档](http://lbsyun.baidu.com/index.php?title=androidsdk/guide/location)
